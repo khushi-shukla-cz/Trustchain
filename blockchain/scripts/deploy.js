@@ -1,0 +1,6 @@
+const hre=require('hardhat');const fs=require('fs');const path=require('path');
+async function main(){const [owner]=await hre.ethers.getSigners();const deployed={chainId:1337};async function make(name,args=[]){const factory=await hre.ethers.getContractFactory(name);const c=await factory.deploy(...args);await c.waitForDeployment();deployed[name]=await c.getAddress();console.log(name,deployed[name]);return c;}
+const access=await make('AccessController');const a=await access.getAddress();const registry=await make('NGORegistry',[a]);await(await access.grant(await access.DEFAULT_ADMIN_ROLE(),await registry.getAddress())).wait();const manager=await make('CampaignManager',[a]);const c=await manager.getAddress();const escrow=await make('DonationEscrow',[c,a]);const e=await escrow.getAddress();const milestones=await make('MilestoneManager',[c]);const m=await milestones.getAddress();const voting=await make('GovernanceVoting',[a,m,e]);await make('AuditRegistry',[a]);
+const role=await access.REVIEWER_ROLE();await(await access.grant(role,await voting.getAddress())).wait();
+const out=path.join(__dirname,'../../frontend/src/lib/deployments.json');fs.mkdirSync(path.dirname(out),{recursive:true});fs.writeFileSync(out,JSON.stringify(deployed,null,2));console.log('Saved frontend deployments',out);
+}main().catch(e=>{console.error(e);process.exitCode=1});
