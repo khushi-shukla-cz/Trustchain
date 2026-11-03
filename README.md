@@ -55,6 +55,14 @@ function. A wallet browser extension must be installed and connected to Sepolia.
 Until a contract address is configured, the donation panel stays in demo mode.
 It does not send ETH or create a blockchain transaction.
 
+## Local test campaigns
+
+The local blockchain deployment creates three approved and pre-funded campaigns
+for testing: Clean Water Initiative (3 ETH raised), Rural Education Fund (6 ETH
+raised), and Community Health Clinic (9 ETH raised). They are seeded by
+`blockchain/scripts/deploy.js` and recreated whenever the local contracts are
+redeployed.
+
 ## Tech stack
 
 - React 19 and TypeScript
